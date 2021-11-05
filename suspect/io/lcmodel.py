@@ -90,7 +90,7 @@ def write_all_files(filename, data, wref_data=None, params=None):
     file_root, ext = os.path.splitext(file_root)
 
     base_params = {
-        "FILBAS": "/home/spectre/.lcmodel/basis-sets/provencher/press_te30_3t_gsh_v3.basis",
+        "FILBAS": "~/.lcmodel/basis-sets/provencher/press_te30_3t_gsh_v3.basis",
         "ICOLST": 1,
         "ICOLEN": shape[0],
         "NDCOLS": shape[0],
@@ -101,7 +101,8 @@ def write_all_files(filename, data, wref_data=None, params=None):
         "DOWS": True if wref_data is not None else False,
         "DOECC": True if wref_data is not None else False,
         "FILRAW": os.path.join(folder, file_root + ".RAW"),
-        "FILPS": os.path.join(folder, file_root + ".PS")
+        "FILPS": os.path.join(folder, file_root + ".PS"),
+        "key": 210387309
     }
     if wref_data is not None:
         base_params["FILH2O"] = os.path.join(folder, file_root + ".H2O")

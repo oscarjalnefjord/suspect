@@ -15,7 +15,7 @@ spar_types = {
                  "volume_selection_method", "nr_of_slices_for_multislice",
                  "spec_num_col", "spec_num_row", "num_dimensions", "TSI_factor",
                  "spectrum_inversion_time", "image_chemical_shift",
-                 "t0_mu1_direction"],
+                 "t0_mu1_direction","nr_of_phase_encoding_profiles_ky"],
     "strings": ["scan_id", "scan_date", "patient_name", "patient_birth_date",
                 "patient_position", "patient_orientation", "nucleus",
                 "volume_selection_enable", "phase_encoding_enable", "t1_measurement_enable",
@@ -62,7 +62,15 @@ def load_sdat(sdat_filename, spar_filename=None, spar_encoding=None):
     data_iter = iter(floats)
     complex_iter = (complex(r, -i) for r, i in zip(data_iter, data_iter))
     raw_data = numpy.fromiter(complex_iter, "complex64")
-    raw_data = numpy.reshape(raw_data, (parameter_dict["rows"], parameter_dict["samples"])).squeeze()
+    if parameter_dict["rows"] > 1:
+        raw_data = numpy.reshape(raw_data, (parameter_dict["rows"]//parameter_dict["nr_of_phase_encoding_profiles_ky"],
+                                            parameter_dict["nr_of_phase_encoding_profiles_ky"], 
+                                            parameter_dict["nr_of_slices_for_multislice"],
+                                            parameter_dict["samples"])).squeeze()
+    else:
+        raw_data = numpy.reshape(raw_data, (parameter_dict["rows"],
+                                            parameter_dict["samples"])).squeeze()
+        
 
     # calculate transformation matrix
     voxel_size = numpy.array([parameter_dict["lr_size"],
